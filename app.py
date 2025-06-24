@@ -13,7 +13,10 @@ TENANT_ID = os.environ.get("AZURE_TENANT_ID")
 AUTHORITY = (
     f"https://login.microsoftonline.com/{TENANT_ID}" if TENANT_ID else None
 )
-SCOPE = [os.environ.get("AZURE_SCOPE")]
+AZURE_SCOPE = os.environ.get("AZURE_SCOPE")
+if not AZURE_SCOPE:
+    print("Warning: AZURE_SCOPE environment variable is not set.")
+SCOPE = [AZURE_SCOPE] if AZURE_SCOPE else []
 
 # Azure OpenAI config
 OPENAI_ENDPOINT = os.environ.get("OPENAI_ENDPOINT")
