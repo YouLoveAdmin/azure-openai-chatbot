@@ -14,8 +14,9 @@ AUTHORITY = (
     f"https://login.microsoftonline.com/{TENANT_ID}" if TENANT_ID else None
 )
 
-AZURE_SCOPE = os.environ.get("AZURE_SCOPE")
-if not AZURE_SCOPE:
+    if not all([CLIENT_ID, CLIENT_SECRET, TENANT_ID, SCOPE[0]]):
+        err = request.args.get('error')
+        if err in ('login_required', 'interaction_required'):
     print("Warning: AZURE_SCOPE environment variable is not set.")
 SCOPE = [AZURE_SCOPE] if AZURE_SCOPE else []
 
