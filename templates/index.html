@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Azure OpenAI Chatbot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Azure OpenAI Chatbot</h1>
+        <div id="user-info">
+            Signed in as {{ user.get('name') if user else '' }} | <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </header>
+    <main>
+        <div id="chat-window"></div>
+        <form id="chat-form">
+            <input type="text" id="message" autocomplete="off" placeholder="Type your message..." required>
+            <button type="submit">Send</button>
+        </form>
+    </main>
+    <script src="{{ url_for('static', filename='chat.js') }}"></script>
+</body>
+</html>
