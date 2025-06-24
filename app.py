@@ -33,22 +33,31 @@ openai.api_type = OPENAI_API_TYPE
 @app.route('/')
 def index():
     if 'user' not in session:
-        return redirect(url_for('login'))
+        # attempt silent login using existing Azure AD session
+        return redirect(url_for('login', auto="1"))
     return render_template('index.html', user=session.get('user'))
 
 @app.route('/login')
 def login():
     if not all([CLIENT_ID, CLIENT_SECRET, TENANT_ID]):
         return "Missing Azure AD configuration", 500
+    prompt = 'none' if request.args.get('auto') == '1' else None
     redirect_uri = url_for('authorized', _external=True)
     cca = ConfidentialClientApplication(
         CLIENT_ID, authority=AUTHORITY, client_credential=CLIENT_SECRET
     )
-    auth_url = cca.get_authorization_request_url(SCOPE, redirect_uri=redirect_uri)
+    auth_url = cca.get_authorization_request_url(
+        SCOPE, redirect_uri=redirect_uri, prompt=prompt
+    )
     return redirect(auth_url)
 
 @app.route('/authorized')
 def authorized():
+    if 'error' in request.args:
+        # user not logged in during silent attempt
+        if request.args.get('error') == 'login_required':
+            return redirect(url_for('login'))
+        return f"Login failure: {request.args.get('error_description')}", 500
     if 'code' not in request.args:
         return redirect(url_for('index'))
     code = request.args['code']

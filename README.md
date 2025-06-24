@@ -7,6 +7,7 @@ This project provides a simple ChatGPT‑like web interface that authenticates u
 * **Azure AD SSO** using the [MSAL](https://github.com/AzureAD/microsoft-authentication-library-for-python) library.
 * **Connect to Azure OpenAI** by specifying your endpoint and deployment name.
 * **Chat history stored locally** via `sessionStorage` in the browser.
+* **Automatic login** when a valid Azure AD session already exists.
 
 ## Setup
 
@@ -39,6 +40,9 @@ python app.py
 ```
 
 Navigate to `http://localhost:5000` and sign in with your Azure AD credentials.
+
+If you already have an active Azure AD session in the browser, the app will
+attempt a silent login so opening a new tab won't prompt you again.
 
 ## Notes
 
